@@ -71,9 +71,6 @@ class TerminalWinContainer:
                 app.update_ui()
             self.on_doing = False
 
-    def get_screen_name(self):
-        return str('layout-screen-%d' % self.screen_id)
-
     def save_conf(self):
         for app in self.apps:
             app.save_conf()
@@ -93,21 +90,21 @@ class TerminalWinContainer:
         if len(self.apps) == 0:
             self.app_quit()
 
-    def create_app(self, screen_name='layout'):
-        monitor = terra_utils.get_screen(screen_name)
+    def create_app(self, window_name='layout'):
+        monitor = terra_utils.get_screen(window_name)
 
-        if screen_name == 'layout':
-            screen_name = self.get_screen_name()
+        if window_name == 'layout':
+            window_name = self._get_window_name()
 
         if monitor is not None:
-            app = TerminalWin(screen_name, monitor)
+            app = TerminalWin(window_name, monitor)
             app.hotkey = self.hotkey
             if len(self.apps) == 0:
                 DbusService(app)
             self.apps.append(app)
-            self.screen_id = max(self.screen_id, int(screen_name.split('-')[2])) + 1
+            self.screen_id = max(self.screen_id, int(window_name.split('-')[2])) + 1
         else:
-            print('Cannot find {}'.format(screen_name))
+            print('Cannot find {}'.format(window_name))
 
     def get_apps(self):
         return self.apps
@@ -115,3 +112,6 @@ class TerminalWinContainer:
     def start(self):
         self.is_running = True
         Gtk.main()
+
+    def _get_window_name(self):
+        return str('layout-screen-%d' % self.screen_id)
