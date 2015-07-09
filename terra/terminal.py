@@ -52,7 +52,7 @@ class TerminalWinContainer:
                 sys.exit(t("Can't bind global hotkey: Another Instance of Terra is probably running."))
 
         self.apps = []
-        self.screen_id = 0
+        self.window_id = 0
         self.on_doing = False
         self.is_running = False
 
@@ -121,7 +121,7 @@ class TerminalWinContainer:
         self.apps.append(window)
 
         # TODO: Find a different way to manage the screen IDs.
-        self.screen_id = max(self.screen_id, int(window_name.split('-')[2])) + 1
+        self.window_id = max(self.window_id, int(window_name.split('-')[2])) + 1
 
     def get_apps(self):
         return self.apps
@@ -131,7 +131,7 @@ class TerminalWinContainer:
         Gtk.main()
 
     def _get_window_name(self):
-        return str('layout-screen-%d' % self.screen_id)
+        return str('layout-screen-%d' % self.window_id)
 
     @staticmethod
     def get_window_settings(name):
