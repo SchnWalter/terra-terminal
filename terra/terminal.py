@@ -21,11 +21,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 import sys
 import time
 
-from gi.repository import Gtk
+from gi.repository import Gtk, Gdk
 
 import terra.globalhotkeys
 
-import terra.terra_utils as terra_utils
 from terra.dbusservice import DbusService
 from terra.interfaces.terminal import TerminalWin
 from terra.handlers import t
@@ -90,21 +89,39 @@ class TerminalWinContainer:
         if len(self.apps) == 0:
             self.app_quit()
 
-    def create_app(self, window_name='layout'):
-        monitor = terra_utils.get_screen(window_name)
-
-        if window_name == 'layout':
+    def create_app(self, window_name=None):
+        if window_name is None:
             window_name = self._get_window_name()
 
-        if monitor is not None:
-            app = TerminalWin(window_name, monitor)
-            app.hotkey = self.hotkey
-            if len(self.apps) == 0:
-                DbusService(app)
-            self.apps.append(app)
-            self.screen_id = max(self.screen_id, int(window_name.split('-')[2])) + 1
-        else:
-            print('Cannot find {}'.format(window_name))
+        # Retrieve information about the window settings.
+        window_settings = self.get_window_settings(window_name)
+
+        if window_settings['disabled']:
+            print("[DEBUG] Not creating disabled window: {}".format(window_name))
+            return
+
+        # TODO: Pass the whole settings dictionary to TerminalWin().
+        partial_settings = Gdk.Rectangle()
+        partial_settings.x = window_settings['posx']
+        partial_settings.y = window_settings['posy']
+        partial_settings.width = window_settings['width']
+        partial_settings.height = window_settings['height']
+
+        # Create new terminal window.
+        window = TerminalWin(window_name, partial_settings)
+
+        # Attach the global hotkey.
+        window.hotkey = self.hotkey
+
+        # Initialize inter-process communication.
+        if len(self.apps) == 0:
+            DbusService(window)
+
+        # Add to the list of running windows.
+        self.apps.append(window)
+
+        # TODO: Find a different way to manage the screen IDs.
+        self.screen_id = max(self.screen_id, int(window_name.split('-')[2])) + 1
 
     def get_apps(self):
         return self.apps
@@ -115,3 +132,11 @@ class TerminalWinContainer:
 
     def _get_window_name(self):
         return str('layout-screen-%d' % self.screen_id)
+
+    @staticmethod
+    def get_window_settings(name):
+        # TODO: Use a dedication section or settings file to store window information.
+        if name not in TerraHandler.config:
+            TerraHandler.config[name] = TerraHandler.config['layout'].copy()
+
+        return TerraHandler.config[name]
