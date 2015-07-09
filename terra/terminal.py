@@ -53,7 +53,6 @@ class TerminalWinContainer:
                 sys.exit(t("Can't bind global hotkey: Another Instance of Terra is probably running."))
 
         self.apps = []
-        self.old_apps = []
         self.screen_id = 0
         self.on_doing = False
         self.is_running = False
@@ -78,8 +77,6 @@ class TerminalWinContainer:
     def save_conf(self):
         for app in self.apps:
             app.save_conf()
-        for app in self.old_apps:
-            app.save_conf(False)
 
     def app_quit(self):
         for app in self.apps:
@@ -92,7 +89,7 @@ class TerminalWinContainer:
     def remove_app(self, ext):
         if ext in self.apps:
             self.apps.remove(ext)
-        self.old_apps.append(ext)
+
         if len(self.apps) == 0:
             self.app_quit()
 
