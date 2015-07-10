@@ -45,7 +45,9 @@ def main(project_root=ROOT):
     from terra.terminal import TerminalWinContainer
     TerraHandler.Wins = TerminalWinContainer()
 
-    for section in TerraHandler.config.iterkeys():
+    # TODO: Don't change config dictionary in TerminalWinContainer.create_app().
+    sections = list(TerraHandler.config.keys())
+    for section in sections:
         if section.find('layout-screen-') != 0:
             continue
 

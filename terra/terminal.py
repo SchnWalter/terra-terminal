@@ -83,18 +83,26 @@ class TerminalWinContainer:
             Gtk.main_quit()
 
     def remove_app(self, ext):
+        """
+        :type ext: TerminalWin
+        """
         if ext in self.apps:
             self.apps.remove(ext)
+            print("window name is:", ext.name)
+            if ext.name in TerraHandler.config:
+                # Delete the window settings.
+                del TerraHandler.config[ext.name]
 
         if len(self.apps) == 0:
             self.app_quit()
 
+    # TODO: Properly create new terminal windows.
     def create_app(self, window_name=None):
-        if window_name is None:
-            window_name = self._get_window_name()
-
+        """
+        :type window_name: str
+        """
         # Retrieve information about the window settings.
-        window_settings = self.get_window_settings(window_name)
+        window_name, window_settings = self.get_window_settings(window_name)
 
         if window_settings['disabled']:
             print("[DEBUG] Not creating disabled window: {}".format(window_name))
@@ -120,9 +128,6 @@ class TerminalWinContainer:
         # Add to the list of running windows.
         self.apps.append(window)
 
-        # TODO: Find a different way to manage the screen IDs.
-        self.window_id = max(self.window_id, int(window_name.split('-')[2])) + 1
-
     def get_apps(self):
         return self.apps
 
@@ -130,13 +135,28 @@ class TerminalWinContainer:
         self.is_running = True
         Gtk.main()
 
-    def _get_window_name(self):
-        return str('layout-screen-%d' % self.window_id)
+    def get_window_settings(self, window_name):
+        if window_name is None:
+            window_name = str('layout-screen-%d' % self.window_id)
 
-    @staticmethod
-    def get_window_settings(name):
-        # TODO: Use a dedication section or settings file to store window information.
-        if name not in TerraHandler.config:
-            TerraHandler.config[name] = TerraHandler.config['layout'].copy()
+        # TODO: Find a different way to manage the screen IDs.
+        # This can cause screen IDs to get to huge numbers in the long term.
+        new_window_id = max(self.window_id, int(window_name.split('-')[2])) + 1
 
-        return TerraHandler.config[name]
+        updated_window_name = None
+        if new_window_id != self.window_id:
+            updated_window_name = str('layout-screen-%d' % new_window_id)
+            self.window_id = new_window_id
+
+        if updated_window_name:
+            # Copy old settings.
+            if window_name in TerraHandler.config:
+                TerraHandler.config[updated_window_name] = TerraHandler.config[window_name]
+                del TerraHandler.config[window_name]
+                window_name = updated_window_name
+
+        # TODO: Use a dedicated section or settings file to store window information.
+        if window_name not in TerraHandler.config:
+            TerraHandler.config[window_name] = TerraHandler.config['layout'].copy()
+
+        return window_name, TerraHandler.config[window_name]
