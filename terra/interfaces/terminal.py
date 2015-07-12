@@ -154,60 +154,6 @@ class TerminalWin(Gtk.Window):
 
         TerraHandler.Wins.app_quit()
 
-    def save_conf(self, keep=True):
-        tabs = str('layout-Tabs-%d' % self.screen_id)
-        if not keep:
-            # NOTE: Don't change the list while iterating over it.
-            config_sections = ConfigManager.get_sections()
-            for section in iter(config_sections):
-                if section.find(tabs) == 0:
-                    ConfigManager.del_conf(section)
-            ConfigManager.del_conf(self.name)
-        else:
-            ConfigManager.set_conf(self.name, 'width', self.monitor.width)
-            ConfigManager.set_conf(self.name, 'height', self.monitor.height)
-            ConfigManager.set_conf(self.name, 'posx', self.monitor.x)
-            ConfigManager.set_conf(self.name, 'posy', self.monitor.y)
-            ConfigManager.set_conf(self.name, 'fullscreen', self.is_fullscreen)
-
-            # We delete all tabs first to avoid unused.
-            # We delete all layouts first to avoid unused.
-            # NOTE: Don't change the list while iterating over it.
-            config_sections = ConfigManager.get_sections()
-            for section in iter(config_sections):
-                if section.find('layout-Tabs-%d' % self.screen_id) == 0:
-                    # We won't delete those who are set as disabled.
-                    if not ConfigManager.get_conf(section, 'disabled'):
-                        ConfigManager.del_conf(section)
-                if section.find('layout-Child-%d' % self.screen_id) == 0:
-                    ConfigManager.del_conf(section)
-
-            # We add them all.
-            tab_id = 0
-            for button in self.buttonbox:
-                if button != self.radio_group_leader:
-                    section = str('layout-Tabs-%d-%d' % (self.screen_id, tab_id))
-                    ConfigManager.set_conf(section, 'name', button.get_label())
-                    tab_id += 1
-
-            tab_id = 0
-            for container in self.notebook.get_children():
-                child_id = 0
-                self.set_paned_parents(container)
-                for child in terra_utils.my_sorted(container.vte_list):
-                    section = str('layout-Child-%d-%d-%d' % (self.screen_id, tab_id, child_id))
-                    print('Id: %d ParId: %d Pos: %d' % (child.id, child.parent, child.pos))
-                    ConfigManager.set_conf(section, 'id', child.id)
-                    ConfigManager.set_conf(section, 'parent', child.parent)
-                    ConfigManager.set_conf(section, 'axis', child.axis)
-                    ConfigManager.set_conf(section, 'pos', child.pos)
-                    ConfigManager.set_conf(section, 'prog', child.progname)
-                    ConfigManager.set_conf(section, 'pwd', child.pwd)
-                    child_id += 1
-                tab_id += 1
-
-        ConfigManager.save_config()
-
     def use_child(self, child, parent, axis, pos):
         child.pos = -1
         child.axis = axis

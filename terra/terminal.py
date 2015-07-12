@@ -74,10 +74,6 @@ class TerminalWinContainer:
     def get_screen_name(self):
         return str('layout-screen-%d' % self.screen_id)
 
-    def save_conf(self):
-        for app in self.apps:
-            app.save_conf()
-
     def app_quit(self):
         for app in self.apps:
             app.quit()

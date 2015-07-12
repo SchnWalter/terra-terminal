@@ -339,7 +339,7 @@ class VteObject(Gtk.VBox):
             self.menu.append(self.win_props)
 
             self.menu_new = Gtk.MenuItem(t('Save Configuration'))
-            self.menu_new.connect('activate', self.save_conf)
+            self.menu_new.connect('activate', ConfigManager.save_config)
             self.menu.append(self.menu_new)
 
             self.menu_close = Gtk.MenuItem(t('Close'))
@@ -377,9 +377,6 @@ class VteObject(Gtk.VBox):
 
     def new_app(self, widget):
         TerraHandler.Wins.create_app()
-
-    def save_conf(self, widget):
-        TerraHandler.Wins.save_conf()
 
     def open_preferences(self, widget):
         ConfigManager.disable_losefocus_temporary = True
