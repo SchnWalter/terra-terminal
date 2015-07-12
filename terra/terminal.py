@@ -70,10 +70,6 @@ class TerminalWinContainer:
                 app.update_ui()
             self.on_doing = False
 
-    def save_conf(self):
-        for app in self.apps:
-            app.save_conf()
-
     def app_quit(self):
         for app in self.apps:
             app.quit()
