@@ -39,36 +39,36 @@ class ShellDialog:
             msg = t('UI data file is missing: {}')
             sys.exit(msg.format(shell_ui_file))
 
-        self.builder = Gtk.Builder()
-        self.builder.set_translation_domain('terra')
-        self.builder.add_from_file(shell_ui_file)
+        builder = Gtk.Builder()
+        builder.set_translation_domain('terra')
+        builder.add_from_file(shell_ui_file)
 
-        self.dialog = self.builder.get_object('shell_command_dialog')
+        dialog = builder.get_object('shell_command_dialog')
         """:type: Gtk.Dialog"""
 
         # Associate the dialog with the main window.
-        self.dialog.set_transient_for(parent_window)
+        dialog.set_transient_for(parent_window)
 
         # Attach ShellDialog class methods as signal handlers.
-        self.builder.connect_signals(self)
+        builder.connect_signals(self)
 
         # Add the "sender" to the dialog.
         # TODO: Rename!
-        self.dialog.sender = sender
+        dialog.sender = sender
 
-        self.dialog.shell_command_path_entry = self.builder.get_object('shell_command_path_entry')
+        dialog.shell_command_path_entry = builder.get_object('shell_command_path_entry')
         """:type: Gtk.Entry"""
-        self.dialog.shell_command_path_entry.set_text(self.dialog.sender.progname)
+        dialog.shell_command_path_entry.set_text(dialog.sender.progname)
 
-        if hasattr(self.dialog.sender, 'progname') and self.dialog.sender.progname:
+        if hasattr(dialog.sender, 'progname') and dialog.sender.progname:
             # Set the entry text.
-            self.dialog.shell_command_path_entry.set_text(self.dialog.sender.progname)
+            dialog.shell_command_path_entry.set_text(dialog.sender.progname)
 
             # Selected the entry text.
-            self.dialog.shell_command_path_entry.grab_focus()
+            dialog.shell_command_path_entry.grab_focus()
 
         # TODO: Use the run() method.
-        self.dialog.show_all()
+        dialog.show_all()
 
     @staticmethod
     def on_cancel_button_clicked(widget):
@@ -92,7 +92,7 @@ class ShellDialog:
 
         old_shell_command = dialog.sender.progname
 
-        # TODO: Notify the user about what is happening.
+        # TODO: Notify the user about what is happening and cleanup the VTE screen.
         try:
             dialog.sender.progname = dialog.shell_command_path_entry.get_text()
             dialog.sender.fork_process(dialog.sender.progname)
