@@ -44,18 +44,18 @@ class ShellDialog:
         self.builder.add_from_file(shell_ui_file)
         self.dialog = self.builder.get_object('shell_command_dialog')
 
-        self.dialog.entry_new_progname = self.builder.get_object('shell_command_path_entry')
+        self.dialog.shell_command_path_entry = self.builder.get_object('shell_command_path_entry')
         if hasattr(self.sender, 'progname') and self.sender.progname:
-            self.dialog.entry_new_progname.set_text(self.sender.progname)
+            self.dialog.shell_command_path_entry.set_text(self.sender.progname)
         else:
-            self.dialog.entry_new_progname.set_text("")
+            self.dialog.shell_command_path_entry.set_text('')
 
         self.dialog.btn_cancel = self.builder.get_object('progname-btn_cancel')
         self.dialog.btn_ok = self.builder.get_object('progname-btn_ok')
 
         self.dialog.btn_cancel.connect('clicked', lambda w: self.close())
         self.dialog.btn_ok.connect('clicked', lambda w: self.rename())
-        self.dialog.entry_new_progname.connect('key-press-event', lambda w, x: self.on_keypress(w, x))
+        self.dialog.shell_command_path_entry.connect('key-press-event', lambda w, x: self.on_keypress(w, x))
 
         self.dialog.connect('delete-event', lambda w, x: self.close())
         self.dialog.connect('destroy', lambda w: self.close())
@@ -75,7 +75,7 @@ class ShellDialog:
     def rename(self):
         save = self.sender.progname
         try:
-            self.sender.progname = self.dialog.entry_new_progname.get_text()
+            self.sender.progname = self.dialog.shell_command_path_entry.get_text()
             self.sender.fork_process(self.sender.progname)
         except:
             self.sender.progname = save
