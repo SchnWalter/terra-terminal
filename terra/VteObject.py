@@ -29,7 +29,7 @@ from terra.interfaces.Preferences import Preferences
 from terra.ConfigManager import ConfigManager
 from terra.handlers import TerraHandler
 from terra.handlers import t
-from terra.interfaces.ProgDialog import ProgDialog
+from terra.interfaces.ShellDialog import ProgDialog
 from terra.interfaces.WinDialog import WinDialog
 from terra.VteObjectContainer import VteObjectContainer
 
