@@ -5,7 +5,7 @@
   <object class="GtkDialog" id="progname_dialog">
     <property name="can_focus">False</property>
     <property name="border_width">10</property>
-    <property name="title" translatable="yes">Rename Tab</property>
+    <property name="title" translatable="yes">Change Shell Command</property>
     <property name="resizable">False</property>
     <property name="modal">True</property>
     <property name="window_position">center</property>
@@ -65,7 +65,7 @@
               <object class="GtkLabel" id="progname-label1">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Enter Prog name:</property>
+                <property name="label" translatable="yes">Shell command:</property>
               </object>
               <packing>
                 <property name="expand">False</property>
