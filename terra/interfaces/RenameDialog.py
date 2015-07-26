@@ -21,57 +21,86 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 import os
 import sys
 
-from gi.repository import Gtk, Gdk
+from gi.repository import Gtk
 
-from terra.ConfigManager import ConfigManager
 from terra.handlers import TerraHandler
 from terra.handlers import t
 
 
+# According to the Gnome application design patterns, the on_apply_button_clicked()
+# method should be moved to the calling function. Once that change is made the
+# ShellDialog and RenameDialog classes are the same thing.
+# TODO: Merge ShellDialog and RenameDialog.
 class RenameDialog:
-    def __init__(self, sender, active_terminal):
+    def __init__(self, sender, parent_window):
+        """
+        :type sender: terra.VteObject.VteObject
+        :type parent_window: Gtk.Window
+        """
+
         rename_ui_file = os.path.join(TerraHandler.get_resources_path(), 'rename.ui')
         if not os.path.exists(rename_ui_file):
             msg = t('UI data file is missing: {}')
             sys.exit(msg.format(rename_ui_file))
 
-        ConfigManager.disable_losefocus_temporary = True
-        self.sender = sender
-        self.active_terminal = active_terminal
+        builder = Gtk.Builder()
+        builder.set_translation_domain('terra')
+        builder.add_from_file(rename_ui_file)
 
-        self.builder = Gtk.Builder()
-        self.builder.set_translation_domain('terra')
-        self.builder.add_from_file(rename_ui_file)
-        self.dialog = self.builder.get_object('rename_dialog')
+        dialog = builder.get_object('rename_dialog')
+        """:type: Gtk.Dialog"""
 
-        self.dialog.entry_new_name = self.builder.get_object('entry_new_name')
-        self.dialog.entry_new_name.set_text(self.sender.get_label())
+        # Associate the dialog with the main window.
+        dialog.set_transient_for(parent_window)
 
-        self.dialog.btn_cancel = self.builder.get_object('btn_cancel')
-        self.dialog.btn_ok = self.builder.get_object('btn_ok')
+        # Attach ShellDialog class methods as signal handlers.
+        builder.connect_signals(self)
 
-        self.dialog.btn_cancel.connect('clicked', lambda w: self.close())
-        self.dialog.btn_ok.connect('clicked', lambda w: self.rename())
-        self.dialog.entry_new_name.connect('key-press-event', lambda w, x: self.on_keypress(w, x))
+        # Add the "sender" to the dialog.
+        # TODO: Rename!
+        dialog.sender = sender
 
-        self.dialog.connect('delete-event', lambda w, x: self.close())
-        self.dialog.connect('destroy', lambda w: self.close())
+        dialog.new_name_entry = builder.get_object('new_name_entry')
+        """:type: Gtk.Entry"""
 
-        self.dialog.show_all()
+        # Set the entry text.
+        dialog.new_name_entry.set_text(dialog.sender.get_label())
 
-    def on_keypress(self, widget, event):
-        if Gdk.keyval_name(event.keyval) == 'Return':
-            self.rename()
+        # Selected the entry text.
+        dialog.new_name_entry.grab_focus()
 
-    def close(self):
-        self.dialog.destroy()
-        self.active_terminal.grab_focus()
-        ConfigManager.disable_losefocus_temporary = False
-        del self
+        # TODO: Use the run() method.
+        dialog.show_all()
 
-    def rename(self):
-        if len(self.dialog.entry_new_name.get_text()) > 0:
-            self.sender.set_label(self.dialog.entry_new_name.get_text())
+    @staticmethod
+    def on_cancel_button_clicked(widget):
+        """
+        :type widget: Gtk.Button
+        """
 
-        ConfigManager.disable_losefocus_temporary = False
-        self.close()
+        dialog = widget.get_toplevel()
+        """:type: Gtk.Dialog"""
+
+        dialog.destroy()
+
+    @staticmethod
+    def on_apply_button_clicked(widget):
+        """
+        :type widget: Gtk.Button
+        """
+
+        dialog = widget.get_toplevel()
+        """:type: Gtk.Dialog"""
+
+        if dialog.new_name_entry.get_text() > 0:
+            dialog.sender.set_label(dialog.new_name_entry.get_text())
+
+        dialog.destroy()
+
+    @staticmethod
+    def on_shell_command_dialog_close(widget):
+        """
+        :type widget: Gtk.Dialog
+        """
+
+        widget.destroy()

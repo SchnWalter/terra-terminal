@@ -389,7 +389,7 @@ class TerminalWin(Gtk.Window):
         self.get_active_terminal().grab_focus()
 
     def page_rename(self, menu, sender):
-        RenameDialog(sender, self.get_active_terminal())
+        RenameDialog(sender, self)
 
     def page_close(self, menu, sender):
         button_count = len(self.buttonbox.get_children())
