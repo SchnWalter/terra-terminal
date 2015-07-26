@@ -57,10 +57,15 @@ class ShellDialog:
         self.dialog.sender = sender
 
         self.dialog.shell_command_path_entry = self.builder.get_object('shell_command_path_entry')
+        """:type: Gtk.Entry"""
+        self.dialog.shell_command_path_entry.set_text(self.dialog.sender.progname)
+
         if hasattr(self.dialog.sender, 'progname') and self.dialog.sender.progname:
+            # Set the entry text.
             self.dialog.shell_command_path_entry.set_text(self.dialog.sender.progname)
-        else:
-            self.dialog.shell_command_path_entry.set_text('')
+
+            # Selected the entry text.
+            self.dialog.shell_command_path_entry.grab_focus()
 
         # TODO: Use the run() method.
         self.dialog.show_all()
@@ -77,7 +82,7 @@ class ShellDialog:
         dialog.destroy()
 
     @staticmethod
-    def on_ok_button_clicked(widget):
+    def on_apply_button_clicked(widget):
         """
         :type widget: Gtk.Button
         """
