@@ -42,9 +42,9 @@ class ShellDialog:
         self.builder = Gtk.Builder()
         self.builder.set_translation_domain('terra')
         self.builder.add_from_file(shell_ui_file)
-        self.dialog = self.builder.get_object('progname_dialog')
+        self.dialog = self.builder.get_object('shell_command_dialog')
 
-        self.dialog.entry_new_progname = self.builder.get_object('progname-entry_new_name')
+        self.dialog.entry_new_progname = self.builder.get_object('shell_command_path_entry')
         if hasattr(self.sender, 'progname') and self.sender.progname:
             self.dialog.entry_new_progname.set_text(self.sender.progname)
         else:
