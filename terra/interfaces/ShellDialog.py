@@ -23,7 +23,6 @@ import sys
 
 from gi.repository import Gtk, Gdk
 
-from terra.ConfigManager import ConfigManager
 from terra.handlers import TerraHandler
 from terra.handlers import t
 
@@ -35,7 +34,6 @@ class ShellDialog:
             msg = t('UI data file is missing: {}')
             sys.exit(msg.format(shell_ui_file))
 
-        ConfigManager.disable_losefocus_temporary = True
         self.sender = sender
         self.active_terminal = active_terminal
 
@@ -69,7 +67,6 @@ class ShellDialog:
     def close(self):
         self.dialog.destroy()
         self.active_terminal.grab_focus()
-        ConfigManager.disable_losefocus_temporary = False
         del self
 
     def rename(self):
@@ -79,5 +76,4 @@ class ShellDialog:
             self.sender.fork_process(self.sender.progname)
         except:
             self.sender.progname = save
-        ConfigManager.disable_losefocus_temporary = False
         self.close()
