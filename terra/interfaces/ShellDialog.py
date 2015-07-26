@@ -28,7 +28,7 @@ from terra.handlers import TerraHandler
 from terra.handlers import t
 
 
-class ProgDialog:
+class ShellDialog:
     def __init__(self, sender, active_terminal):
         shell_ui_file = os.path.join(TerraHandler.get_resources_path(), 'shell.ui')
         if not os.path.exists(shell_ui_file):

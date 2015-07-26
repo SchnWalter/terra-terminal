@@ -29,7 +29,7 @@ from terra.interfaces.Preferences import Preferences
 from terra.ConfigManager import ConfigManager
 from terra.handlers import TerraHandler
 from terra.handlers import t
-from terra.interfaces.ShellDialog import ProgDialog
+from terra.interfaces.ShellDialog import ShellDialog
 from terra.interfaces.WinDialog import WinDialog
 from terra.VteObjectContainer import VteObjectContainer
 
@@ -321,7 +321,7 @@ class VteObject(Gtk.VBox):
 
     def save_progname(self, widget):
         ConfigManager.disable_losefocus_temporary = True
-        ProgDialog(self, self)
+        ShellDialog(self, self)
 
     def win_prefs(self, widget):
         ConfigManager.disable_losefocus_temporary = True
