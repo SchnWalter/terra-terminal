@@ -66,8 +66,21 @@ class ShellDialog:
         self.dialog.show_all()
 
     @staticmethod
+    def on_cancel_button_clicked(widget):
+        """
+        :type widget: Gtk.Button
+        """
+
+        dialog = widget.get_toplevel()
+        """:type: Gtk.Dialog"""
+
+        dialog.destroy()
+
+    @staticmethod
     def on_ok_button_clicked(widget):
-        """:type: Gtk.Button"""
+        """
+        :type widget: Gtk.Button
+        """
 
         dialog = widget.get_toplevel()
         """:type: Gtk.Dialog"""
@@ -90,14 +103,3 @@ class ShellDialog:
         """
 
         widget.destroy()
-
-    @staticmethod
-    def on_cancel_button_clicked(widget):
-        """
-        :type widget: Gtk.Button
-        """
-
-        dialog = widget.get_toplevel()
-        """:type: Gtk.Dialog"""
-
-        dialog.destroy()
