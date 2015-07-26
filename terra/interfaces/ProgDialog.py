@@ -30,10 +30,10 @@ from terra.handlers import t
 
 class ProgDialog:
     def __init__(self, sender, active_terminal):
-        terminal_ui_file = os.path.join(TerraHandler.get_resources_path(), 'terminal.ui')
-        if not os.path.exists(terminal_ui_file):
+        shell_ui_file = os.path.join(TerraHandler.get_resources_path(), 'shell.ui')
+        if not os.path.exists(shell_ui_file):
             msg = t('UI data file is missing: {}')
-            sys.exit(msg.format(terminal_ui_file))
+            sys.exit(msg.format(shell_ui_file))
 
         ConfigManager.disable_losefocus_temporary = True
         self.sender = sender
@@ -41,7 +41,7 @@ class ProgDialog:
 
         self.builder = Gtk.Builder()
         self.builder.set_translation_domain('terra')
-        self.builder.add_from_file(terminal_ui_file)
+        self.builder.add_from_file(shell_ui_file)
         self.dialog = self.builder.get_object('progname_dialog')
 
         self.dialog.entry_new_progname = self.builder.get_object('progname-entry_new_name')
