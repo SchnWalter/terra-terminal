@@ -13,6 +13,7 @@ from terra.VteObjectContainer import VteObjectContainer
 from terra.VteObject import VteObject
 
 
+# TODO: Convert to Gtk.ApplicationWindow().
 class TerminalWin(Gtk.Window):
     def __init__(self, name, monitor):
         main_ui_file = os.path.join(TerraHandler.get_resources_path(), 'main.ui')

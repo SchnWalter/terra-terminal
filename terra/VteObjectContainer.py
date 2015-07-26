@@ -39,7 +39,9 @@ class VteObjectContainer(Gtk.HBox):
         if not progname:
             progname = ConfigManager.get_conf('general', 'start_shell_program')
         import terra.VteObject
-        self.append_terminal(terra.VteObject.VteObject(), progname, pwd=pwd)
+
+        # TODO: VteObjectContainer and VteObject should be part of a Gtk.ApplicationWindow().
+        self.append_terminal(terra.VteObject.VteObject(self.parent), progname, pwd=pwd)
 
         self.pack_start(self.active_terminal, True, True, 0)
         self.show_all()

@@ -4,14 +4,17 @@
   <requires lib="gtk+" version="3.0"/>
   <object class="GtkDialog" id="shell_command_dialog">
     <property name="can_focus">False</property>
-    <property name="border_width">10</property>
+    <property name="border_width">8</property>
+    <property name="type">popup</property>
     <property name="title" translatable="yes">Change Shell Command</property>
     <property name="resizable">False</property>
     <property name="modal">True</property>
     <property name="window_position">center</property>
+    <property name="destroy_with_parent">True</property>
     <property name="type_hint">dialog</property>
     <property name="skip_taskbar_hint">True</property>
     <property name="skip_pager_hint">True</property>
+    <property name="urgency_hint">True</property>
     <child internal-child="vbox">
       <object class="GtkBox" id="shell_command_box">
         <property name="can_focus">False</property>
@@ -53,7 +56,6 @@
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="pack_type">end</property>
             <property name="position">0</property>
           </packing>
         </child>
@@ -98,7 +100,7 @@
       </object>
     </child>
     <action-widgets>
-      <action-widget response="0">progname-btn_ok</action-widget>
+      <action-widget response="1">progname-btn_ok</action-widget>
       <action-widget response="0">progname-btn_cancel</action-widget>
     </action-widgets>
   </object>

@@ -28,19 +28,22 @@ from terra.handlers import t
 
 
 class ShellDialog:
-    def __init__(self, sender, active_terminal):
+    def __init__(self, sender, parent_window):
         shell_ui_file = os.path.join(TerraHandler.get_resources_path(), 'shell.ui')
         if not os.path.exists(shell_ui_file):
             msg = t('UI data file is missing: {}')
             sys.exit(msg.format(shell_ui_file))
 
         self.sender = sender
-        self.active_terminal = active_terminal
+        """:type: terra.VteObject.VteObject"""
 
         self.builder = Gtk.Builder()
         self.builder.set_translation_domain('terra')
         self.builder.add_from_file(shell_ui_file)
+
         self.dialog = self.builder.get_object('shell_command_dialog')
+        """:type: Gtk.Dialog"""
+        self.dialog.set_transient_for(parent_window)
 
         self.dialog.shell_command_path_entry = self.builder.get_object('shell_command_path_entry')
         if hasattr(self.sender, 'progname') and self.sender.progname:
@@ -66,7 +69,7 @@ class ShellDialog:
 
     def close(self):
         self.dialog.destroy()
-        self.active_terminal.grab_focus()
+        self.sender.grab_focus()
         del self
 
     def rename(self):

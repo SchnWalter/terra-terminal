@@ -54,11 +54,12 @@ regex_strings =[SCHEME + "//(?:" + USERPASS + "\\@)?" + HOST + PORT + URLPATH,
     "(?:news:|man:|info:)[[:alnum:]\\Q^_{|}~!\"#$%&'()*+,./;:=?`\\E]+"]
 
 class VteObject(Gtk.VBox):
-    def __init__(self):
+    def __init__(self, parent_window):
         super(Gtk.VBox, self).__init__()
         # Allow UI to be updated by other events.
         TerraHandler.add_ui_event_handler(self.update_ui)
 
+        self.parent_window = parent_window
         self.parent = 0
         self.pwd = None
         self.pid = (0, 0)
@@ -321,7 +322,7 @@ class VteObject(Gtk.VBox):
 
     def save_progname(self, widget):
         ConfigManager.disable_losefocus_temporary = True
-        ShellDialog(self, self)
+        ShellDialog(self, self.parent_window)
 
     def win_prefs(self, widget):
         ConfigManager.disable_losefocus_temporary = True
