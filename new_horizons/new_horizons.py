@@ -88,33 +88,28 @@ class WindowHandler(object):
         ApplicationHandler.last_window_identifier = self.gtk_window.window_identifier
 
     def update_position(self, position_conf):
-        # Get the screen information.
-        screen = self.gtk_window.get_screen()
+        # Get the Gdk.Screen information.
+        gdk_screen = self.gtk_window.get_screen()
+        """:type: Gdk.Screen"""
 
-        # win_x = self.gtk_window.get_halign()
-        # win_y = self.gtk_window.get_valign()
-        # if 'vertical' in position_conf:
-        #     if position_conf['vertical'] == 'top':
-        #         win_x = 0
-        #     if position_conf['vertical'] == 'center':
-        #         win_x = 400
-        #     if position_conf['vertical'] == 'center':
-        #         win_x = 800
+        # Get the index of screen among the screens in the display to which it belongs.
+        screen_number = gdk_screen.get_number()
+
+        # Get the screen geometry.
+        screen_geometry = gdk_screen.get_monitor_geometry(screen_number)
 
         width = -1
         if 'width' in position_conf and position_conf['width']:
             if position_conf['width'][-1:] == '%':
-                screen.get_width()
-
                 width = int(
-                    float(position_conf['width'][:-1]) * screen.get_width() / 100
+                    float(position_conf['width'][:-1]) * screen_geometry.width / 100
                 )
 
         height = -1
         if 'height' in position_conf:
             if position_conf['height'][-1:] == '%':
                 height = int(
-                    float(position_conf['height'][:-1]) * screen.get_height() / 100
+                    float(position_conf['height'][:-1]) * screen_geometry.height / 100
                 )
 
         # Set the default size of the window.
@@ -138,25 +133,12 @@ window1_config = {
     'window_position': {
         'vertical': 'top',
         'horizontal': 'left',
-        'height': '50%',
-        'width': '80%',
+        'height': '60%',
+        'width': '40%',
     }
 }
 window1 = WindowHandler(window1_config)
 window1.gtk_window.show_all()
 ApplicationHandler.windows[window1.gtk_window.window_identifier] = window1
-
-# Create a 2nd window.
-window2_config = {
-    'window_position': {
-        'vertical': 'bottom',
-        'horizontal': 'right',
-        'height': '30%',
-        'width': '40%',
-    }
-}
-window2 = WindowHandler(window2_config)
-window2.gtk_window.show_all()
-ApplicationHandler.windows[window2.gtk_window.window_identifier] = window2
 
 Gtk.main()
