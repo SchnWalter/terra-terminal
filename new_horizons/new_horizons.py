@@ -43,7 +43,16 @@ class MainWindowSignalsHandler:
         """
         :type widget: Gtk.Widget
         """
+        # Create a new tab.
         print('adding new stack!')
+
+    @staticmethod
+    def on_addwindow_button_clicked(widget):
+        """
+        :type widget: Gtk.Widget
+        """
+        # Create a new window.
+        ApplicationHandler.create_window()
 
     @staticmethod
     def on_application_window_window_state_event(widget, event):
@@ -123,22 +132,32 @@ class ApplicationHandler(object):
     last_window_identifier = 0
     """:type: int"""
 
+    default_window_config = {
+        'window_position': {
+            'vertical': 'top',
+            'horizontal': 'left',
+            'height': '60%',
+            'width': '40%',
+        }
+    }
+
     @classmethod
     def __init__(cls):
         pass
 
+    @classmethod
+    def create_window(cls, window_config=None):
+        if not window_config:
+            window_config = cls.default_window_config
+
+        new_window = WindowHandler(window_config)
+        new_window.gtk_window.show_all()
+        ApplicationHandler.windows[new_window.gtk_window.window_identifier] = new_window
+
+        pass
+
 
 # Create the first window.
-window1_config = {
-    'window_position': {
-        'vertical': 'top',
-        'horizontal': 'left',
-        'height': '60%',
-        'width': '40%',
-    }
-}
-window1 = WindowHandler(window1_config)
-window1.gtk_window.show_all()
-ApplicationHandler.windows[window1.gtk_window.window_identifier] = window1
+ApplicationHandler.create_window()
 
 Gtk.main()
